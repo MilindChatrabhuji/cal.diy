@@ -34,7 +34,15 @@ export function EventList({ day }: Props) {
     });
   }, [events, day]);
 
-  const dayEvents = useMemo(() => daySegments.map(({ event }) => event), [daySegments]);
+  const dayEvents = useMemo(
+    () =>
+      daySegments.map(({ event, segment }) => ({
+        ...event,
+        start: segment.start.toDate(),
+        end: segment.end.toDate(),
+      })),
+    [daySegments]
+  );
 
   const layoutMap = useMemo(() => {
     const layouts = calculateEventLayouts(dayEvents);
@@ -62,7 +70,7 @@ export function EventList({ day }: Props) {
   }, [daySegments, startHour]);
 
   // Find which overlap group the hovered event belongs to
-  const hoveredEventLayout = hoveredEventId ? layoutMap.get(hoveredEventId) : null;
+  const hoveredEventLayout = hoveredEventId !== null ? layoutMap.get(hoveredEventId) : null;
   const hoveredGroupIndex = hoveredEventLayout?.groupIndex ?? null;
 
   // Find the event ID that matches the selected booking UID (only for events on this day)
@@ -131,6 +139,7 @@ export function EventList({ day }: Props) {
               onEventClick={eventOnClick}
               isHovered={isHovered}
               currentlySelectedEventId={selectedEventId}
+              segmentDay={eventStart}
             />
           </div>
         );
