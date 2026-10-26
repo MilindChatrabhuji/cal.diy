@@ -59,6 +59,16 @@ describe("Tests for InputField Component", () => {
     const errorElement = getByRole("textbox");
     expect(errorElement).toHaveAttribute("error", errorMessage);
   });
+
+  it("Should associate label with input when custom id prop is provided", () => {
+    const { getByLabelText } = render(
+      <InputField id="custom-input-id" name="testInput" label="Custom Label" />
+    );
+
+    const inputElement = getByLabelText("Custom Label") as HTMLInputElement;
+    expect(inputElement).toBeInTheDocument();
+    expect(inputElement.id).toBe("custom-input-id");
+  });
 });
 
 describe("Tests for PasswordField Component", () => {
@@ -78,6 +88,18 @@ describe("Tests for PasswordField Component", () => {
 
     fireEvent.click(toggleButton);
     expect(passwordInput.type).toBe("password");
+  });
+
+  it("Should associate label with password input when custom id prop is provided", () => {
+    const { getByLabelText } = render(
+      <TooltipProvider>
+        <PasswordField id="custom-password-id" name="password" label="Custom Password" />
+      </TooltipProvider>
+    );
+
+    const passwordInput = getByLabelText("Custom Password") as HTMLInputElement;
+    expect(passwordInput).toBeInTheDocument();
+    expect(passwordInput.id).toBe("custom-password-id");
   });
 });
 
@@ -111,6 +133,16 @@ describe("Tests for TextAreaField Component", () => {
     fireEvent.change(textareaElement, { target: { value: "Hello" } });
     expect(onChangeMock).toHaveBeenCalled();
     expect(textareaElement.value).toBe("Hello");
+  });
+
+  it("Should associate label with textarea when custom id prop is provided", () => {
+    const { getByLabelText } = render(
+      <TextAreaField id="custom-textarea-id" name="testTextArea" label="Custom Textarea Label" />
+    );
+
+    const textareaElement = getByLabelText("Custom Textarea Label") as HTMLTextAreaElement;
+    expect(textareaElement).toBeInTheDocument();
+    expect(textareaElement.id).toBe("custom-textarea-id");
   });
 });
 

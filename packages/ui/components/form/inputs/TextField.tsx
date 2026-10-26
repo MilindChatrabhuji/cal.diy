@@ -101,11 +101,12 @@ const Addon = ({
 );
 
 export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(function InputField(props, ref) {
-  const id = useId();
+  const generatedId = useId();
   const { t: _t, isLocaleReady, i18n } = useLocale();
   const t = props.t || _t;
   const name = props.name || "";
   const {
+    id: externalId,
     label = t(name),
     labelProps,
     labelClassName,
@@ -132,6 +133,8 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(function
     size,
     ...passThrough
   } = props;
+
+  const id = externalId ?? generatedId;
 
   const [inputValue, setInputValue] = useState<string>("");
 
