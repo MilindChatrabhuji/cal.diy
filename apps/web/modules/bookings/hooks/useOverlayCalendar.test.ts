@@ -1,7 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-import { renderHook } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { WrappedBookerPropsMain } from "../types";
 import { useOverlayCalendar } from "./useOverlayCalendar";
@@ -111,7 +111,9 @@ describe("useOverlayCalendar", () => {
     expect(result.current.checkIsCalendarToggled("work", 1)).toBe(false);
 
     // Uncheck the last selected calendar
-    result.current.handleToggleConnectedCalendar("personal", 1);
+    act(() => {
+      result.current.handleToggleConnectedCalendar("personal", 1);
+    });
 
     expect(result.current.checkIsCalendarToggled("personal", 1)).toBe(false);
     expect(result.current.checkIsCalendarToggled("work", 1)).toBe(false);
