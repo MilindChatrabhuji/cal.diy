@@ -34,20 +34,15 @@ export function EventList({ day }: Props) {
     });
   }, [events, day]);
 
-  const dayEvents = useMemo(
-    () =>
-      daySegments.map(({ event, segment }) => ({
-        ...event,
-        start: segment.start.toDate(),
-        end: segment.end.toDate(),
-      })),
-    [daySegments]
-  );
-
   const layoutMap = useMemo(() => {
-    const layouts = calculateEventLayouts(dayEvents);
+    const layoutEvents = daySegments.map(({ event, segment }) => ({
+      ...event,
+      start: segment.start.toDate(),
+      end: segment.end.toDate(),
+    }));
+    const layouts = calculateEventLayouts(layoutEvents);
     return createLayoutMap(layouts);
-  }, [dayEvents]);
+  }, [daySegments]);
 
   const eventCalculations = useMemo(() => {
     return new Map(
@@ -76,9 +71,9 @@ export function EventList({ day }: Props) {
   // Find the event ID that matches the selected booking UID (only for events on this day)
   const selectedEventId = useMemo(() => {
     if (!selectedBookingUid) return undefined;
-    const matchingEvent = dayEvents.find((event) => event.options?.bookingUid === selectedBookingUid);
-    return matchingEvent?.id;
-  }, [dayEvents, selectedBookingUid]);
+    const matchingSegment = daySegments.find(({ event }) => event.options?.bookingUid === selectedBookingUid);
+    return matchingSegment?.event.id;
+  }, [daySegments, selectedBookingUid]);
 
   // Scroll to the selected event when it changes
   useEffect(() => {
@@ -98,7 +93,7 @@ export function EventList({ day }: Props) {
 
   return (
     <>
-      {dayEvents.map((event) => {
+      {daySegments.map(({ event }) => {
         const layout = layoutMap.get(event.id);
         if (!layout) return null;
 
